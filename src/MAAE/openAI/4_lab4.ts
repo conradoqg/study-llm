@@ -1,11 +1,11 @@
-import Terminal from './common/terminal.ts'
+import Terminal from '../common/terminal.ts'
 import { Agent, run, webSearchTool } from '@openai/agents'
 import { withTrace, type AgentOutputType, type ModelSettings } from '@openai/agents-core'
 import { input } from '@inquirer/prompts'
 import { z } from 'zod'
-import { sendHTMLEmailTool } from './common/sendMailTool.ts'
+import { sendHTMLEmailTool } from '../common/sendMailTool.ts'
 import { dedent } from 'ts-dedent'
-import { withTraceAndLog } from './common/agentsExtensions.ts'
+import { withTraceAndLog } from '../common/agentsExtensions.ts'
 
 // Lab 4: Deep Research with Web Search, Structured Outputs, and Automated Pipeline
 

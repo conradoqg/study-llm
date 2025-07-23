@@ -1,11 +1,11 @@
-import terminal from './common/terminal.ts'
+import terminal from '../common/terminal.ts'
 import { Agent, run, withTrace, type InputGuardrail, type GuardrailFunctionOutput, type AgentOutputType, AgentsError, RunResult } from '@openai/agents'
 import OpenAI from 'openai'
 import { OpenAIChatCompletionsModel } from '@openai/agents'
 import { z } from 'zod'
-import { sendHTMLEmailTool } from './common/sendMailTool.ts'
+import { sendHTMLEmailTool } from '../common/sendMailTool.ts'
 import { dedent } from 'ts-dedent'
-import { withTraceAndLog } from './common/agentsExtensions.ts'
+import { createOpenRouterModel, withTraceAndLog } from '../common/agentsExtensions.ts'
 
 // Lab 3 covers: different models, structured outputs, and guardrails
 // 3.0: Check API keys
@@ -20,17 +20,12 @@ export async function checkApiKeys() {
 }
 
 // Shared setup for models and agents
-const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
-const openrouterClient = new OpenAI({ apiKey: process.env.OPENROUTER_API_KEY, baseURL: OPENROUTER_BASE_URL })
-const deepseekModel = new OpenAIChatCompletionsModel(openrouterClient, 'deepseek/deepseek-r1-0528')
-const geminiModel = new OpenAIChatCompletionsModel(openrouterClient, 'google/gemini-2.5-flash')
-const qwenModel = new OpenAIChatCompletionsModel(openrouterClient, 'qwen/qwen3-235b-a22b-07-25:free')
 const instructions1 = 'You are a sales agent working for ComplAI, a company that provides a SaaS tool for ensuring SOC2 compliance and preparing for audits, powered by AI. You write professional, serious cold emails.'
 const instructions2 = 'You are a humorous, engaging sales agent working for ComplAI, a company that provides a SaaS tool for ensuring SOC2 compliance and preparing for audits, powered by AI. You write witty, engaging cold emails that are likely to get a response.'
 const instructions3 = 'You are a busy sales agent working for ComplAI, a company that provides a SaaS tool for ensuring SOC2 compliance and preparing for audits, powered by AI. You write concise, to the point cold emails.'
-const salesAgent1 = new Agent({ name: 'DeepSeek Sales Agent', instructions: instructions1, model: deepseekModel })
-const salesAgent2 = new Agent({ name: 'Gemini Sales Agent', instructions: instructions2, model: geminiModel })
-const salesAgent3 = new Agent({ name: 'Qwen Sales Agent', instructions: instructions3, model: qwenModel })
+const salesAgent1 = new Agent({ name: 'DeepSeek Sales Agent', instructions: instructions1, model: createOpenRouterModel('deepseek/deepseek-r1-0528') })
+const salesAgent2 = new Agent({ name: 'Gemini Sales Agent', instructions: instructions2, model: createOpenRouterModel('google/gemini-2.5-flash') })
+const salesAgent3 = new Agent({ name: 'Qwen Sales Agent', instructions: instructions3, model: createOpenRouterModel('qwen/qwen3-235b-a22b-07-25:free') })
 const tool1 = salesAgent1.asTool({ toolName: 'sales_agent1', toolDescription: 'Write a cold sales email' })
 const tool2 = salesAgent2.asTool({ toolName: 'sales_agent2', toolDescription: 'Write a cold sales email' })
 const tool3 = salesAgent3.asTool({ toolName: 'sales_agent3', toolDescription: 'Write a cold sales email' })

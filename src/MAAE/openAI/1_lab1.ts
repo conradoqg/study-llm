@@ -1,5 +1,5 @@
 import { Agent, run, withTrace } from '@openai/agents'
-import terminal from './common/terminal.ts'
+import terminal from '../common/terminal.ts'
 
 export async function tellJoke() {
     terminal.logMarkdown('## 🥼 Lab 1: Tell a joke')
