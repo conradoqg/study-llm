@@ -3,6 +3,7 @@ import sgMail from '@sendgrid/mail'
 import { z } from 'zod'
 import terminal from './terminal.ts'
 import { dedent } from 'ts-dedent'
+import { htmlToMarkdown } from 'mdream'
 
 const SendEmailParameter = z.object({
     subject: z.string().describe('The subject of the email to send'),
@@ -15,7 +16,7 @@ export const sendEmailTool = tool({
     name: 'send_email',
     description: 'Send out an email with the given body to all sales prospects using SendGrid',
     parameters: SendEmailParameter,
-    execute: async ({ body, subject }: SendEmailParameterType): Promise<SendEmailReturnType> => {
+    execute: async ({ subject, body }: SendEmailParameterType): Promise<SendEmailReturnType> => {
         const key = process.env.SENDGRID_API_KEY
         const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'ed@edwarddonner.com';
         const toEmail = process.env.SENDGRID_TO_EMAIL || 'ed.donner@gmail.com';
@@ -34,7 +35,11 @@ export const sendEmailTool = tool({
 
         terminal.logMarkdown(dedent`
             ### Email sent successfully
-            ${terminal.renderJSON(mailData)}
+            |To|From|Subject|
+            |---|---|---|
+            |${toEmail}|${fromEmail}|${subject}|
+            
+            ${body}
             `)
         return { status: 'success' };
     },
@@ -44,7 +49,7 @@ export const sendHTMLEmailTool = tool({
     name: 'send_email',
     description: 'Send out an email with the given body to all sales prospects using SendGrid',
     parameters: SendEmailParameter,
-    execute: async ({ body, subject }: SendEmailParameterType): Promise<SendEmailReturnType> => {
+    execute: async ({ subject, body }: SendEmailParameterType): Promise<SendEmailReturnType> => {
         const key = process.env.SENDGRID_API_KEY
         const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'ed@edwarddonner.com';
         const toEmail = process.env.SENDGRID_TO_EMAIL || 'ed.donner@gmail.com';
@@ -63,7 +68,11 @@ export const sendHTMLEmailTool = tool({
 
         terminal.logMarkdown(dedent`
             ### Email sent successfully
-            ${terminal.renderJSON(mailData)}
+            |To|From|Subject|
+            |---|---|---|
+            |${toEmail}|${fromEmail}|${subject}|
+
+            ${htmlToMarkdown(body)}
             `)
         return { status: 'success' };
     },

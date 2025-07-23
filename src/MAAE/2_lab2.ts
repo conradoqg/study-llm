@@ -1,8 +1,9 @@
 import { Agent, run, withTrace } from '@openai/agents'
 import { input } from '@inquirer/prompts'
 import { dedent } from 'ts-dedent'
-import terminal from './common/terminal.ts'
+import Terminal from './common/terminal.ts'
 import { sendEmailTool, sendHTMLEmailTool } from './common/sendMailTool.ts'
+import { withTraceAndLog } from './common/agentsExtensions.ts'
 
 // Instantiate three sales-writing agents (cells 153–185)
 const salesAgent1 = new Agent({
@@ -29,57 +30,54 @@ const salesTools = [
 
 // Lab 0: Test email stub function
 export async function sendTestEmail() {
-    terminal.logMarkdown('## 🥼 Lab 2.0: Sending test email stub')
+    Terminal.logMarkdown('## 🥼 Lab 2.0: Sending test email stub')
     const body = await input({ prefill: 'editable', default: 'Send a test email to confirm the email sending functionality is working.', message: 'Enter the email body:' })
     const result = await sendEmailTool.invoke(null, JSON.stringify({ body, subject: 'Test email from ComplAI' }))
-    terminal.logMarkdown(dedent`
+    Terminal.logMarkdown(dedent`
         ### Tool result
-        ${terminal.renderJSON(result)}
+        ${Terminal.renderJSON(result)}
         `)
 }
 
 // Lab 1: Agent workflow
 export async function agentWorkflow() {
     {
-        terminal.logMarkdown('## 🥼 Lab 2.1.1.1: Professional Sales Agent')
+        Terminal.logMarkdown('## 🥼 Lab 2.1.1.1: Professional Sales Agent')
         const inputText = await input({ prefill: 'editable', default: 'Write a cold sales email', message: 'Enter the prompt for the Professional Sales Agent:' })
 
-        await withTrace('Lab 1.1.1: Streaming from Professional Sales Agent', async (trace) => {
-            terminal.spinner.start()
-            const result = await run(salesAgent1, inputText)
-            terminal.spinner.success()
-            terminal.logMarkdown(result.finalOutput)
-            terminal.logTrace(trace)
+        const result = await withTraceAndLog('Lab 1.1.1: Streaming from Professional Sales Agent', async () => {
+            return run(salesAgent1, inputText)
         })
+        Terminal.logMarkdown(result.finalOutput)
     }
 
     let outputs: string[] = []
 
     {
-        terminal.logMarkdown('## 🥼 Lab 2.1.1.2: Parallel cold emails')
+        Terminal.logMarkdown('## 🥼 Lab 2.1.1.2: Parallel cold emails')
         const inputText = await input({ prefill: 'editable', default: 'Write a cold sales email', message: 'Enter the prompt for the Parallel Sales Agent:' })
 
         await withTrace('Parallel cold emails', async (trace) => {
-            terminal.spinner.start()
+            Terminal.spinner.start()
             const results = await Promise.all([
                 run(salesAgent1, inputText),
                 run(salesAgent2, inputText),
                 run(salesAgent3, inputText),
             ])
-            terminal.spinner.success()
+            Terminal.spinner.success()
             outputs = results.map((r) => r.finalOutput)
             outputs.forEach((output, i) => {
-                terminal.logMarkdown(dedent`### Cold email from Sales Agent ${i + 1}
+                Terminal.logMarkdown(dedent`### Cold email from Sales Agent ${i + 1}
                 ${output}
                 `)
             })
 
-            terminal.logTrace(trace)
+            Terminal.logTrace(trace)
         })
     }
 
     {
-        terminal.logMarkdown('## 🥼 Lab 2.1.2: Picking best cold email')
+        Terminal.logMarkdown('## 🥼 Lab 2.1.2: Picking best cold email')
 
         const salesPicker = new Agent({
             name: 'sales_picker',
@@ -89,51 +87,46 @@ export async function agentWorkflow() {
 
         const combined = outputs.join('\n\n')
 
-        await withTrace('Selection from sales people', async (trace) => {
-            terminal.spinner.start()
-            const pickResult = await run(salesPicker, combined)
-            terminal.spinner.success()
-            terminal.logMarkdown(dedent`### Best cold email picked by Sales Picker
-                ${pickResult.finalOutput}
-                `)
-            terminal.logTrace(trace)
+        const pickResult = await withTraceAndLog('Selection from sales people', async () => {
+            return run(salesPicker, combined)
         })
+        Terminal.logMarkdown(dedent`### Best cold email picked by Sales Picker
+            ${pickResult.finalOutput}
+            `)
     }
 }
 
 // Lab 2: Sales Manager with tools
 export async function toolWorkflow() {
-    terminal.logMarkdown('## 🥼 Lab 2.2: Sales Manager with tools')
+    Terminal.logMarkdown('## 🥼 Lab 2.2: Sales Manager with tools')
 
     const tools = [...salesTools, sendEmailTool]
     const salesManager = new Agent({
         name: 'Sales Manager',
-        instructions:
-            'You are a sales manager working for ComplAI. You use the tools given to you to generate cold sales emails. ' +
-            'You never generate sales emails yourself; you always use the tools. ' +
-            'You try all 3 sales_agent tools once before choosing the best e-mail. ' +
-            'You pick the single best email and use the sendEmail tool to send the best email only (and only the best email) to the user.',
+        instructions: dedent`
+            You are a sales manager working for ComplAI. You use the tools given to you to generate cold sales emails.
+            You never generate sales emails yourself; you always use the tools.
+            You try all 3 sales_agent tools once before choosing the best e-mail.
+            You pick the single best email and use the sendEmail tool to send the best email only (and only the best email) to the user.`,
         tools,
         model: 'gpt-4o-mini',
     })
 
     const inputText = await input({ prefill: 'editable', default: 'Send a cold sales email addressed to \'Dear CEO\'', message: 'Enter the prompt for the Sales Manager:' })
 
-    await withTrace('Sales manager', async (trace) => {
-        terminal.spinner.start()
-        const managerResult = await run(salesManager, inputText)
-        terminal.spinner.success()
-        terminal.logMarkdown(dedent`
-            ### Agent response
-            ${managerResult.finalOutput}
-        `)
-        terminal.logTrace(trace)
+    const managerResult = await withTraceAndLog('Sales manager', async () => {
+        return run(salesManager, inputText)
     })
+
+    Terminal.logMarkdown(dedent`
+        ### Agent response
+        ${managerResult.finalOutput}
+    `)
 }
 
 // Lab 3: Automated SDR with handoffs
 export async function handoffWorkflow() {
-    terminal.logMarkdown('## 🥼 Lab 2.3: Automated SDR with handoffs')
+    Terminal.logMarkdown('## 🥼 Lab 2.3: Automated SDR with handoffs')
 
     const subjectInstructions = 'You can write a subject for a cold sales email. You are given a message and you need to write a subject for an email that is likely to get a response.'
     const htmlInstructions = 'You can convert a text email body to an HTML email body. You are given a text email body which might have some markdown and you need to convert it to an HTML email body with simple, clear, compelling layout and design.'
@@ -172,27 +165,15 @@ export async function handoffWorkflow() {
 
     const inputText = await input({ prefill: 'editable', default: 'Send out a cold sales email addressed as \'Dear CEO\' from Alice of ACME Company.', message: 'Enter the prompt for the Sales Manager:' })
 
-    const withTraceAndLog = async (name: string, fn: () => Promise<void>) => {
-        try {
-            await withTrace(name, async (trace) => {
-                terminal.spinner.start(`Wait: ${terminal.renderTrace(trace)}`)
-                await fn()
-                if (terminal.spinner.isSpinning) terminal.spinner.success()
-                terminal.logTrace(trace)
-            })
-        } catch (ex: any) {
-            terminal.spinner.error(`Error: ${ex.message}`)
-        }
-    }
-
-    await withTraceAndLog('Automated SDR', async () => {
-        const automatedResult = await run(
+    const automatedResult = await withTraceAndLog('Automated SDR', async () => {
+        return run(
             salesManager,
             inputText
         )
-        terminal.logMarkdown(dedent`
-            ### Agent response
-            ${automatedResult.finalOutput}
-        `)
     })
+
+    Terminal.logMarkdown(dedent`
+        ### Agent response
+        ${automatedResult.finalOutput}
+    `)
 }
