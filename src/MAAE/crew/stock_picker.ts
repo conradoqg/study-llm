@@ -1,6 +1,7 @@
 import terminal from "../common/terminal.ts"
-import { Agent, run, webSearchTool } from "@openai/agents"
+import { Agent, run } from "@openai/agents"
 import { withTraceAndLog } from "../common/agentsExtensions.ts"
+import { serperSearchTool } from "../common/serperSearchTool.ts"
 
 // Crew workflow for selecting the best trending technology stock
 export async function stockPickerWorkflow() {
@@ -13,11 +14,11 @@ export async function stockPickerWorkflow() {
     name: "Trending Company Finder",
     instructions: `
       Financial News Analyst that finds trending companies in a given sector.
-      Read the latest news and find 2-3 companies that are trending.
-      Always pick new companies and don't pick the same company twice.
+      Read the latest news and find 2-3 companies that are trending in the last month.
+      Always pick new companies and don't pick the same company twice.      
     `,
     model: "gpt-4o-mini",
-    tools: [webSearchTool({ searchContextSize: "low" })],
+    tools: [serperSearchTool],
   })
 
   const financialResearcher = new Agent({
@@ -28,7 +29,7 @@ export async function stockPickerWorkflow() {
       future outlook, and investment potential.
     `,
     model: "gpt-4o-mini",
-    tools: [webSearchTool({ searchContextSize: "low" })],
+    tools: [serperSearchTool],
   })
 
   const stockPicker = new Agent({
