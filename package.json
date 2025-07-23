@@ -1,0 +1,28 @@
+{
+    "name": "lab2",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "ts-node 2_openai/2_lab2.ts"
+    },
+    "dependencies": {
+        "@inquirer/prompts": "^7.7.1",
+        "@openai/agents": "*",
+        "@sendgrid/mail": "*",
+        "colored-json-stringify": "^1.1.3",
+        "dotenv": "*",
+        "marked": "^11.0.1",
+        "marked-terminal": "^7.3.0",
+        "openai": "*",
+        "terminal-link": "^4.0.0",
+        "ts-dedent": "^2.2.0",
+        "yocto-spinner": "^1.0.0",
+        "yoctocolors": "^2.1.1",
+        "zod": "^3.25.67"
+    },
+    "devDependencies": {
+        "@types/marked-terminal": "^6.1.1",
+        "ts-node": "*",
+        "typescript": "*"
+    }
+}
