@@ -1,11 +1,11 @@
 import { marked, type MarkedExtension } from 'marked';
 import { markedTerminal } from 'marked-terminal';
-import yoctoSpinner from 'yocto-spinner';
 import terminalLink from 'terminal-link';
 import colors from 'yoctocolors';
 import { coloredJSONStringify } from 'colored-json-stringify';
 import { Trace } from '@openai/agents';
 import logSymbols from 'log-symbols';
+import yoctoSpinner from './spinner.ts';
 
 marked.use(markedTerminal() as MarkedExtension);
 

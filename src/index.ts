@@ -6,6 +6,7 @@ import * as openAILab2 from './MAAE/openAI/2_lab2.ts'
 import * as openAILab3 from './MAAE/openAI/3_lab3.ts'
 import * as openAILab4 from './MAAE/openAI/4_lab4.ts'
 import * as tests from './MAAE/tests/index.ts'
+import Terminal from './MAAE/common/terminal.ts';
 
 // Main execution grouping labs
 async function main() {
@@ -38,4 +39,7 @@ async function main() {
     }
 }
 
-main().catch((err) => console.error(err))
+main().catch((err) => {
+    console.error(err)
+    Terminal.spinner.isSpinning && Terminal.spinner.stop()
+})

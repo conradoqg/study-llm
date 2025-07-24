@@ -2,7 +2,7 @@ import { Agent, run, withTrace } from '@openai/agents'
 import { input } from '@inquirer/prompts'
 import { dedent } from 'ts-dedent'
 import Terminal from '../common/terminal.ts'
-import { sendEmailTool, sendHTMLEmailTool } from '../common/sendMailTool.ts'
+import { sendEmailTool, sendHTMLEmailTool } from '../common/tool/sendMailTool.ts'
 import { withTraceAndLog } from '../common/agentsExtensions.ts'
 
 // Instantiate three sales-writing agents (cells 153–185)

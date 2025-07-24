@@ -1,7 +1,7 @@
 import { tool } from '@openai/agents'
 import sgMail from '@sendgrid/mail'
 import { z } from 'zod'
-import terminal from './terminal.ts'
+import Terminal from '../terminal.ts'
 import { dedent } from 'ts-dedent'
 import { htmlToMarkdown } from 'mdream'
 
@@ -31,16 +31,15 @@ export const sendEmailTool = tool({
             await sgMail.send(mailData);
         }
 
-        if (terminal.spinner.isSpinning) terminal.spinner.success()
-
-        terminal.logMarkdown(dedent`
+        Terminal.spinner.push(Terminal.renderMarkdown(dedent`
             ### Email sent successfully
             |To|From|Subject|
             |---|---|---|
             |${toEmail}|${fromEmail}|${subject}|
             
             ${body}
-            `)
+            `))
+
         return { status: 'success' };
     },
 })
@@ -64,9 +63,7 @@ export const sendHTMLEmailTool = tool({
             await sgMail.send(mailData);
         }
 
-        if (terminal.spinner.isSpinning) terminal.spinner.success()
-
-        terminal.logMarkdown(dedent`
+        Terminal.spinner.push(Terminal.renderMarkdown(dedent`
             ### Email sent successfully
             |To|From|Subject|
             |---|---|---|
@@ -74,6 +71,8 @@ export const sendHTMLEmailTool = tool({
 
             ${htmlToMarkdown(body)}
             `)
+        )
+
         return { status: 'success' };
     },
 })

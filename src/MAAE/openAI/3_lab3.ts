@@ -3,7 +3,7 @@ import { Agent, run, withTrace, type InputGuardrail, type GuardrailFunctionOutpu
 import OpenAI from 'openai'
 import { OpenAIChatCompletionsModel } from '@openai/agents'
 import { z } from 'zod'
-import { sendHTMLEmailTool } from '../common/sendMailTool.ts'
+import { sendHTMLEmailTool } from '../common/tool/sendMailTool.ts'
 import { dedent } from 'ts-dedent'
 import { createOpenRouterModel, withTraceAndLog } from '../common/agentsExtensions.ts'
 
