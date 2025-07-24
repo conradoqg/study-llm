@@ -7,6 +7,9 @@ import * as openAILab1 from './MAAE/openAI/1_lab1.ts'
 import * as openAILab2 from './MAAE/openAI/2_lab2.ts'
 import * as openAILab3 from './MAAE/openAI/3_lab3.ts'
 import * as openAILab4 from './MAAE/openAI/4_lab4.ts'
+import * as testsInteractive from './MAAE/tests/interactive_lab.ts'
+import * as testsCustomerSupport from './MAAE/tests/customer_support_lab.ts'
+import * as testsCustomerSupportConv from './MAAE/tests/customer_support_conversational_lab.ts'
 
 // Main execution grouping labs
 async function main() {
@@ -18,6 +21,9 @@ async function main() {
         { group: 'MAAE - OpenAI', name: 'Lab 2', labs: openAILab2 },
         { group: 'MAAE - OpenAI', name: 'Lab 3', labs: openAILab3 },
         { group: 'MAAE - OpenAI', name: 'Lab 4', labs: openAILab4 },
+        { group: 'MAAE - Tests', name: 'Interactive Lab', labs: testsInteractive },
+        { group: 'MAAE - Tests', name: 'Customer Support Lab', labs: testsCustomerSupport },
+        { group: 'MAAE - Tests', name: 'Customer Support Conversational Lab', labs: testsCustomerSupportConv },
     ];
 
     const selectedFunctions = await checkbox<() => Promise<void>>({
