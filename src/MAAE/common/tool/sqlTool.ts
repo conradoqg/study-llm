@@ -1,7 +1,7 @@
 import { tool } from '@openai/agents'
 import Terminal from '../terminal.ts'
 import { z } from 'zod'
-import { Database } from 'better-sqlite3'
+import { type Database } from 'better-sqlite3'
 
 export const getSchemaTool = (db: Database) => tool({
     name: 'get_schema',

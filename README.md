@@ -33,9 +33,19 @@
     - [n8n](https://n8n.io/)
 - Dev SDKs && Interesting Services    
     - [mem0](https://github.com/mem0ai/mem0)
-    - [OpenAI Agents SDK]()
+    - [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/)
         - [Multi-Agent Portfolio Collaboration with OpenAI Agents SDK](https://cookbook.openai.com/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration)
         - [Best practices for prompt engineering with the OpenAI API](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
-
-
-## Cheatsheet
+- Datasets
+    - SQLite
+        - [chinook](https://github.com/lerocha/chinook-database)
+        - [netflixdb](https://github.com/lerocha/netflixdb)
+        - [adventure-works](https://huggingface.co/datasets/sarus-tech/spider_12/blob/550f4e832269d94fa35a1910cd35aff74b0211f2/spider2-localdb/AdventureWorks.sqlite)
+        - [sakila](https://github.com/bradleygrant/sakila-sqlite3)
+        - [northwind](https://github.com/conwid/awesome-northwind)
+    - Postgresql
+        - [chinook](https://github.com/lerocha/chinook-database)
+        - [netflixdb](https://github.com/lerocha/netflixdb)
+        - [adventure-works](https://github.com/chriseaton/docker-adventureworks)
+        - [sakila](https://github.com/lizhuoqi/db-sample-schemas)
+        - [northwind](https://github.com/pthom/northwind_psql)

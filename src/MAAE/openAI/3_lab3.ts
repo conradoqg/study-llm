@@ -1,7 +1,5 @@
 import terminal from '../common/terminal.ts'
-import { Agent, run, withTrace, type InputGuardrail, type GuardrailFunctionOutput, type AgentOutputType, AgentsError, RunResult } from '@openai/agents'
-import OpenAI from 'openai'
-import { OpenAIChatCompletionsModel } from '@openai/agents'
+import { Agent, run, type InputGuardrail, type GuardrailFunctionOutput, type AgentOutputType } from '@openai/agents'
 import { z } from 'zod'
 import { sendHTMLEmailTool } from '../common/tool/sendMailTool.ts'
 import { dedent } from 'ts-dedent'
